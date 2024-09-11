@@ -25,6 +25,20 @@ func getTimeData() (time.Time, time.Time) {
 	return now, todayRenewalTime
 }
 
+func schedule() {
+	for true {
+		now, todayRenewalTime := getTimeData()
+		// Calculate time until next renewal
+		timeUntilRenewal := todayRenewalTime.Sub(now)
+		if timeUntilRenewal < 0 {
+			timeUntilRenewal += 24 * time.Hour
+		}
+		// Wait until renewal, then renew
+		time.Sleep(timeUntilRenewal)
+		gen()
+	}
+}
+
 func check() {
 	// Create file if it doesn't exist
 	if _, err := os.Stat("/srv/mootd"); os.IsNotExist(err) {
@@ -57,5 +71,6 @@ func serve() {
 
 func main() {
 	check()
+	go schedule()
 	serve()
 }
