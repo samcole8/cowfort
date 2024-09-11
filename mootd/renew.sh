@@ -1,11 +1,7 @@
 #!/bin/sh
 
-# Chance reciprocal for cow being non-standard
-# e.g., if CHANCE=100 then 1/100 chance of atypical cow
-chance=10
-
 # RNG for cow chance
-cow=$((1 + $RANDOM % $chance))
+cow=$((1 + $RANDOM % $CHANCE))
 if [ $cow != 1 ]; then
 	# Use default cow
 	mootd=$(fortune | cowsay)
