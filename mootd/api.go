@@ -12,6 +12,7 @@ func gen() {
 }
 
 func check() {
+	// Create file if it doesn't exist
 	if _, err := os.Stat("/srv/mootd"); os.IsNotExist(err) {
 		gen()
 	}
