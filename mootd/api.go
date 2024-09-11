@@ -7,9 +7,13 @@ import (
 	"os/exec"
 )
 
+func gen() {
+	exec.Command("/bin/sh", "/usr/local/bin/renew.sh").Run()
+}
+
 func check() {
 	if _, err := os.Stat("/srv/mootd"); os.IsNotExist(err) {
-		exec.Command("/bin/sh", "/usr/local/bin/renew.sh").Run()
+		gen()
 	}
 }
 
