@@ -13,13 +13,17 @@ func check() {
 	}
 }
 
-func get(w http.ResponseWriter, _ *http.Request) {
-	content, _ := os.ReadFile("/srv/mootd")
-	io.WriteString(w, string(content))
+func serve() {
+	var get = func(w http.ResponseWriter, _ *http.Request) {
+		content, _ := os.ReadFile("/srv/mootd")
+		io.WriteString(w, string(content))
+	}
+
+	http.HandleFunc("/", get)
+	http.ListenAndServe(":80", nil)
 }
 
 func main() {
 	check()
-	http.HandleFunc("/", get)
-	http.ListenAndServe(":80", nil)
+	serve()
 }
