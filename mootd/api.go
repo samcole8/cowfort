@@ -29,6 +29,19 @@ func check() {
 	// Create file if it doesn't exist
 	if _, err := os.Stat("/srv/mootd"); os.IsNotExist(err) {
 		gen()
+	} else {
+		now, todayRenewalTime := getTimeData()
+		// Get file modified datetime
+		fileInfo, _ := os.Stat("/srv/mootd")
+		fileAge := time.Now().Sub(fileInfo.ModTime())
+		// Calculate time since last renewal
+		timeSinceRenewal := now.Sub(todayRenewalTime)
+		if timeSinceRenewal < 0 {
+			timeSinceRenewal += 24 * time.Hour
+		}
+		if fileAge > timeSinceRenewal {
+			gen()
+		}
 	}
 }
 
