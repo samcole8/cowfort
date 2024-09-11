@@ -19,7 +19,6 @@ func getTimeData() (time.Time, time.Time) {
 	now := time.Now()
 	// Get renewal datetime
 	renewalTimeStr := os.Getenv("RENEWAL_TIME")
-	fmt.Println("Renewal at " + renewalTimeStr)
 	renewalTime, _ := time.Parse("15:04:05", renewalTimeStr)
 	todayRenewalTime := time.Date(
 		now.Year(), now.Month(), now.Day(),
@@ -37,7 +36,7 @@ func schedule() {
 			timeUntilRenewal += 24 * time.Hour
 		}
 		// Wait until renewal, then renew
-		fmt.Println("Renewal in " + timeUntilRenewal.String())
+		fmt.Println("Renewal at " + os.Getenv("RENEWAL_TIME"), "in " + timeUntilRenewal.String())
 		time.Sleep(timeUntilRenewal)
 		gen()
 	}
@@ -63,7 +62,7 @@ func check() {
 			fmt.Println("MOTD has expired")
 			gen()
 		} else {
-			fmt.Println("MOTD in-date")
+			fmt.Println("MOTD in-date, " + fileAge.String() + " old")
 		}
 	}
 }
