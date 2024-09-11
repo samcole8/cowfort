@@ -4,6 +4,9 @@ FROM alpine:3.20.0
 # Copy binaries
 COPY ./api.go ./renew.sh /usr/local/bin/
 
+ENV CHANCE=10
+ENV RENEWAL_TIME="21:05:00"
+
 # Make configurations
 RUN \
     # Enable testing repo
