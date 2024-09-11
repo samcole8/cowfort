@@ -10,7 +10,7 @@ RUN \
     echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
     # Install dependencies
-    apk add --no-cache cowsay@testing fortune dcron openrc go && \
+    apk add --no-cache cowsay@testing fortune openrc go && \
     # Create restricted user
     addgroup api && \
     adduser -s /bin/nologin -D -G api api && \
@@ -22,10 +22,7 @@ RUN \
     chown -R root:api /srv && \
     chmod -R 770 /srv && \
     chown root:api /usr/local/bin/api /usr/local/bin/renew.sh && \
-    chmod 550 /usr/local/bin/api /usr/local/bin/renew.sh && \
-    # Add crontab
-    echo -e '0 0 * * * /usr/local/bin/renew.sh\n' | crontab -u api - && \
-    rc-update add dcron
+    chmod 550 /usr/local/bin/api /usr/local/bin/renew.sh
 
 # Expose HTTP port
 EXPOSE 80
