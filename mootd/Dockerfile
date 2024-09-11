@@ -17,7 +17,7 @@ RUN \
     # Compile binary
     CGO_ENABLED=0 go build -o /usr/local/bin/api /usr/local/bin/api.go && \
     rm /usr/local/bin/api.go && \
-    apk del go && \
+    apk del go openrc && \
     # Set permissions
     chown -R root:api /srv && \
     chmod -R 770 /srv && \
