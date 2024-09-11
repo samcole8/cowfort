@@ -5,7 +5,8 @@ FROM alpine:3.20.0
 COPY ./api.go ./renew.sh /usr/local/bin/
 
 ENV CHANCE=10
-ENV RENEWAL_TIME="21:05:00"
+ENV RENEWAL_TIME=24:00:00
+ENV TZ=UTC
 
 # Make configurations
 RUN \
@@ -13,7 +14,7 @@ RUN \
     echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
     # Install dependencies
-    apk add --no-cache cowsay@testing fortune openrc go && \
+    apk add --no-cache cowsay@testing fortune openrc go tzdata && \
     # Create restricted user
     addgroup api && \
     adduser -s /bin/nologin -D -G api api && \
