@@ -5,3 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - mootd:/srv
+#    environment:
+#      - TZ=UTC
+#      - RENEWAL_TIME=24:00:00
+
+volumes:
+  mootd:
