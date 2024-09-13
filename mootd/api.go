@@ -10,8 +10,15 @@ import (
 )
 
 func gen() {
-	exec.Command("/bin/sh", "/usr/local/bin/renew.sh").Run()
-	fmt.Println("MOTD generated")
+	output, err := exec.Command("/bin/sh", "/usr/local/bin/renew.sh").CombinedOutput()
+    if err != nil {
+        // The command exited with an error
+        fmt.Printf("MOTD generation failed: %v\n", err)
+		fmt.Printf("%s", output)
+    } else {
+        // The command exited successfully
+        fmt.Println("MOTD generated")
+	}
 }
 
 func getTimeData() (time.Time, time.Time) {
