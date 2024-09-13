@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -13,11 +13,11 @@ func gen() {
 	output, err := exec.Command("/bin/sh", "/usr/local/bin/renew.sh").CombinedOutput()
     if err != nil {
         // The command exited with an error
-        fmt.Printf("MOTD generation failed: %v\n", err)
-		fmt.Printf("%s", output)
+        log.Printf("MOTD generation failed: %v\n", err)
+		log.Printf("%s", output)
     } else {
         // The command exited successfully
-        fmt.Println("MOTD generated")
+        log.Println("MOTD generated")
 	}
 }
 
@@ -43,7 +43,7 @@ func schedule() {
 			timeUntilRenewal += 24 * time.Hour
 		}
 		// Wait until renewal, then renew
-		fmt.Println("Renewal at " + os.Getenv("RENEWAL_TIME"), "in " + timeUntilRenewal.String())
+		log.Println("Renewal at " + os.Getenv("RENEWAL_TIME"), "in " + timeUntilRenewal.String())
 		time.Sleep(timeUntilRenewal)
 		gen()
 	}
@@ -52,10 +52,10 @@ func schedule() {
 func check() {
 	// Create file if it doesn't exist
 	if _, err := os.Stat("/srv/mootd"); os.IsNotExist(err) {
-		fmt.Println("MOTD not found")
+		log.Println("MOTD not found")
 		gen()
 	} else {
-		fmt.Println("MOTD found, testing validity")
+		log.Println("MOTD found, testing validity")
 		now, todayRenewalTime := getTimeData()
 		// Get file modified datetime
 		fileInfo, _ := os.Stat("/srv/mootd")
@@ -66,10 +66,10 @@ func check() {
 			timeSinceRenewal += 24 * time.Hour
 		}
 		if fileAge > timeSinceRenewal {
-			fmt.Println("MOTD has expired")
+			log.Println("MOTD has expired")
 			gen()
 		} else {
-			fmt.Println("MOTD in-date, " + fileAge.String() + " old")
+			log.Println("MOTD in-date, " + fileAge.String() + " old")
 		}
 	}
 }
@@ -85,10 +85,10 @@ func serve() {
 }
 
 func main() {
-	fmt.Println("Starting checks")
+	log.Println("Starting checks")
 	check()
-	fmt.Println("Starting scheduler")
+	log.Println("Starting scheduler")
 	go schedule()
-	fmt.Println("Starting server")
+	log.Println("Starting server")
 	serve()
 }
