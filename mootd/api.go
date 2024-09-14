@@ -9,44 +9,13 @@ import (
 	"time"
 )
 
-func gen() {
-	output, err := exec.Command("/bin/sh", "/usr/local/bin/renew.sh").CombinedOutput()
-    if err != nil {
-        // The command exited with an error
-        log.Printf("MOTD generation failed: %v\n", err)
-		log.Printf("%s", output)
-    } else {
-        // The command exited successfully
-        log.Println("MOTD generated")
-	}
-}
-
-func getTimeData() (time.Time, time.Time) {
-	// Get current datetime
-	now := time.Now()
-	// Get renewal datetime
-	renewalTimeStr := os.Getenv("RENEWAL_TIME")
-	renewalTime, _ := time.Parse("15:04:05", renewalTimeStr)
-	todayRenewalTime := time.Date(
-		now.Year(), now.Month(), now.Day(),
-		renewalTime.Hour(), renewalTime.Minute(), renewalTime.Second(), 0, now.Location(),
-	)
-	return now, todayRenewalTime
-}
-
-func schedule() {
-	for {
-		now, todayRenewalTime := getTimeData()
-		// Calculate time until next renewal
-		timeUntilRenewal := todayRenewalTime.Sub(now)
-		if timeUntilRenewal < 0 {
-			timeUntilRenewal += 24 * time.Hour
-		}
-		// Wait until renewal, then renew
-		log.Println("Renewal at " + os.Getenv("RENEWAL_TIME"), "in " + timeUntilRenewal.String())
-		time.Sleep(timeUntilRenewal)
-		gen()
-	}
+func main() {
+	log.Println("Starting checks")
+	check()
+	log.Println("Starting scheduler")
+	go schedule()
+	log.Println("Starting server")
+	serve()
 }
 
 func check() {
@@ -74,6 +43,21 @@ func check() {
 	}
 }
 
+func schedule() {
+	for {
+		now, todayRenewalTime := getTimeData()
+		// Calculate time until next renewal
+		timeUntilRenewal := todayRenewalTime.Sub(now)
+		if timeUntilRenewal < 0 {
+			timeUntilRenewal += 24 * time.Hour
+		}
+		// Wait until renewal, then renew
+		log.Println("Renewal at " + os.Getenv("RENEWAL_TIME"), "in " + timeUntilRenewal.String())
+		time.Sleep(timeUntilRenewal)
+		gen()
+	}
+}
+
 func serve() {
 	var get = func(w http.ResponseWriter, _ *http.Request) {
 		content, _ := os.ReadFile("/srv/mootd")
@@ -84,11 +68,27 @@ func serve() {
 	http.ListenAndServe(":80", nil)
 }
 
-func main() {
-	log.Println("Starting checks")
-	check()
-	log.Println("Starting scheduler")
-	go schedule()
-	log.Println("Starting server")
-	serve()
+func gen() {
+	output, err := exec.Command("/bin/sh", "/usr/local/bin/renew.sh").CombinedOutput()
+    if err != nil {
+        // The command exited with an error
+        log.Printf("MOTD generation failed: %v\n", err)
+		log.Printf("%s", output)
+    } else {
+        // The command exited successfully
+        log.Println("MOTD generated")
+	}
+}
+
+func getTimeData() (time.Time, time.Time) {
+	// Get current datetime
+	now := time.Now()
+	// Get renewal datetime
+	renewalTimeStr := os.Getenv("RENEWAL_TIME")
+	renewalTime, _ := time.Parse("15:04:05", renewalTimeStr)
+	todayRenewalTime := time.Date(
+		now.Year(), now.Month(), now.Day(),
+		renewalTime.Hour(), renewalTime.Minute(), renewalTime.Second(), 0, now.Location(),
+	)
+	return now, todayRenewalTime
 }
