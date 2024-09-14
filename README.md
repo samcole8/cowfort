@@ -32,6 +32,6 @@ Define environment variables in the compose file (or run command) to override th
 
 | Env | Default | Example | Description |
 |---|---|---|---|
-| `TZ` | `UTC` | `80` | Timezone used by the server. |
+| `TZ` | `UTC` | `London/Europe` | Timezone used by the server. |
 | `RENEWAL_TIME` | `24:00:00` | `12:30:00` | MOTD renewal time (HH:MM:SS). |
 | `CHANCE` | `10` | `100` | Reciprocal chance for atypical cow. The example used gives a 1 in 100 chance of a random non-standard cow; the default is 1 in 10. |
