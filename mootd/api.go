@@ -35,7 +35,7 @@ func getTimeData() (time.Time, time.Time) {
 }
 
 func schedule() {
-	for true {
+	for {
 		now, todayRenewalTime := getTimeData()
 		// Calculate time until next renewal
 		timeUntilRenewal := todayRenewalTime.Sub(now)
