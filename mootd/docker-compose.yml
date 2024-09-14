@@ -10,6 +10,7 @@ services:
 #    environment:
 #      - TZ=UTC
 #      - RENEWAL_TIME=24:00:00
+#      - CHANCE=10
 
 volumes:
   mootd:
