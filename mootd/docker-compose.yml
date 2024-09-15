@@ -2,9 +2,7 @@ services:
   mootd:
     container_name: mootd
     restart: unless-stopped
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: samcole8/mootd:latest
     volumes:
       - mootd:/srv
 #    environment:
